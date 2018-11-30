@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+chat-room-test.zul
+
+	Purpose:
+		
+	Description:
+		
+	History:
+		Fri Nov 30 12:20:00 CST 2018, Created by rudyhuang
+
+Copyright (C) 2018 Potix Corporation. All Rights Reserved.
+
+-->
+<zk>
+    <window title="Chat" border="normal" apply="org.zkoss.addons.rxzk.ChatComposer">
+        Say <textbox id="msg" forward="onOK=onChange" />
+        <separator bar="true"/>
+        <vlayout id="inf"/>
+    </window>
+</zk>

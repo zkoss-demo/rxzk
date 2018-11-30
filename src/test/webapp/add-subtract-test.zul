@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+add-subtract-test.zul
+
+	Purpose:
+		
+	Description:
+		
+	History:
+		Fri Nov 30 11:36:22 CST 2018, Created by rudyhuang
+
+Copyright (C) 2018 Potix Corporation. All Rights Reserved.
+
+-->
+<zk>
+    <div apply="org.zkoss.addons.rxzk.AddSubtractComposer">
+        <label id="number" value="0" />
+        <button id="btnAdd" label="+"/>
+        <button id="btnSubtract" label="-"/>
+    </div>
+</zk>
