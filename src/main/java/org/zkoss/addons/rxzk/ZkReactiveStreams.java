@@ -91,6 +91,7 @@ public abstract class ZkReactiveStreams {
 	 * @param scope the scope of the event queue. Like {@link EventQueues#DESKTOP} or {@link EventQueues#APPLICATION}.
 	 * @param autoCreate whether to create the event queue if not found.
 	 * @param async whether the listener is asynchronous.
+	 * @param <T> the type of event
 	 * @return A publisher instance.
 	 */
 	public static <T extends Event> Publisher<? extends Event> fromEventQueue(final String queueName, final String scope, final boolean autoCreate, final boolean async) {
@@ -109,6 +110,7 @@ public abstract class ZkReactiveStreams {
 	 * The listener is synchronous.
 	 *
 	 * @param eventQueue the event queue
+	 * @param <T> the type of event
 	 * @return A publisher instance.
 	 */
 	public static <T extends Event> Publisher<T> fromEventQueue(final EventQueue<T> eventQueue) {
@@ -120,6 +122,7 @@ public abstract class ZkReactiveStreams {
 	 *
 	 * @param eventQueue the event queue
 	 * @param async whether the listener is asynchronous.
+	 * @param <T> the type of event
 	 * @return A publisher instance.
 	 */
 	public static <T extends Event> Publisher<T> fromEventQueue(final EventQueue<T> eventQueue, final boolean async) {

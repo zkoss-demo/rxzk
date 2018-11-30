@@ -93,6 +93,7 @@ public abstract class ZkObservable {
 	 * The listener is synchronous.
 	 *
 	 * @param eventQueue the event queue
+	 * @param <T> the type of event
 	 * @return An observable source.
 	 */
 	public static <T extends Event> Observable<T> fromEventQueue(final EventQueue<T> eventQueue) {
@@ -104,6 +105,7 @@ public abstract class ZkObservable {
 	 *
 	 * @param eventQueue the event queue
 	 * @param async whether the listener is asynchronous.
+	 * @param <T> the type of event
 	 * @return An observable source.
 	 */
 	public static <T extends Event> Observable<T> fromEventQueue(final EventQueue<T> eventQueue, final boolean async) {

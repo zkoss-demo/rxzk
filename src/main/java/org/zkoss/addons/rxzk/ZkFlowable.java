@@ -93,6 +93,7 @@ public abstract class ZkFlowable {
 	 * The listener is synchronous.
 	 *
 	 * @param eventQueue the event queue
+	 * @param <T> the type of event
 	 * @return A flowable source.
 	 */
 	public static <T extends Event> Flowable<T> fromEventQueue(final EventQueue<T> eventQueue) {
@@ -104,6 +105,7 @@ public abstract class ZkFlowable {
 	 *
 	 * @param eventQueue the event queue
 	 * @param async whether the listener is asynchronous.
+	 * @param <T> the type of event
 	 * @return A flowable source.
 	 */
 	public static <T extends Event> Flowable<T> fromEventQueue(final EventQueue<T> eventQueue, final boolean async) {
