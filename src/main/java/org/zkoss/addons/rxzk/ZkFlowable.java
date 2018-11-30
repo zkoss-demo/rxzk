@@ -20,7 +20,7 @@ import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.Events;
 
 /**
- * A util class for RxJava integration to create {@link Flowable} instances
+ * An util class for RxJava integration to create {@link Flowable} instances
  * from the event of ZK {@link Component} or {@link EventQueue}.
  *
  * @author rudyhuang

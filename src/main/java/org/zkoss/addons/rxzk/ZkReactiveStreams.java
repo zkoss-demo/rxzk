@@ -23,7 +23,7 @@ import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.Events;
 
 /**
- * A util class that provides Reactive Streams support.
+ * An util class that provides Reactive Streams support.
  *
  * @author rudyhuang
  */
