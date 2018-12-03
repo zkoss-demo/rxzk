@@ -20,5 +20,5 @@ A ZK addon to provide event streams for RxJava 2. It implemented Reactive Stream
     <dependency>
         <groupId>org.zkoss.addons</groupId>
         <artifactId>rxzk</artifactId>
-        <version>1.0</version>
+        <version>1.0.1</version>
     </dependency>
