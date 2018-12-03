@@ -11,6 +11,7 @@ Copyright (C) 2018 Potix Corporation. All Rights Reserved.
 */
 package org.zkoss.addons.rxzk;
 
+import io.reactivex.Observable;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
@@ -40,19 +41,20 @@ public class AddSubtractComposer extends SelectorComposer<Div> {
 	public void doAfterCompose(Div comp) throws Exception {
 		super.doAfterCompose(comp);
 
-		ZkObservable.fromEvent(btnAdd, Events.ON_CLICK)
-				.map(new Function<Event, Integer>() {
-					public Integer apply(Event e) {
-						return 1;
-					}
-				})
-				.mergeWith(
-						ZkObservable.fromEvent(btnSubtract, Events.ON_CLICK)
-								.map(new Function<Event, Integer>() {
-									public Integer apply(Event e) {
-										return -1;
-									}
-								}))
+		Observable.merge(
+				ZkObservable.fromEvent(btnAdd, Events.ON_CLICK)
+						.map(new Function<Event, Integer>() {
+							public Integer apply(Event e) {
+								return 1;
+							}
+						}),
+				ZkObservable.fromEvent(btnSubtract, Events.ON_CLICK)
+						.map(new Function<Event, Integer>() {
+							public Integer apply(Event e) {
+								return -1;
+							}
+						})
+				)
 				.scan(0, new BiFunction<Integer, Integer, Integer>() {
 					public Integer apply(Integer a, Integer b) {
 						return a + b;
