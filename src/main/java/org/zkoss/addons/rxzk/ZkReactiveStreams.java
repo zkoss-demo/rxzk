@@ -131,7 +131,7 @@ public abstract class ZkReactiveStreams {
 				if (subscriber == null)
 					throw new NullPointerException();
 
-				subscriber.onSubscribe(new ExistedEventQueueSubscription<T>(eventQueue, async, subscriber));
+				subscriber.onSubscribe(new ExistingEventQueueSubscription<T>(eventQueue, async, subscriber));
 			}
 		};
 	}
@@ -140,7 +140,7 @@ public abstract class ZkReactiveStreams {
 		private final Component _comp;
 		private final String _event;
 		private final Subscriber<? super Event> _subscriber;
-		private boolean _requested;
+		private EventListener<Event> _listener;
 
 		ComponentEventSubscription(Component comp, String event,
 		                           Subscriber<? super Event> subscriber) {
@@ -150,14 +150,14 @@ public abstract class ZkReactiveStreams {
 		}
 
 		public void request(long n) {
-			if (!_requested) {
+			if (_listener == null) {
 				try {
-					_comp.addEventListener(_event, new EventListener<Event>() {
+					_listener = new EventListener<Event>() {
 						public void onEvent(Event t) throws Exception {
 							_subscriber.onNext(t);
 						}
-					});
-					_requested = true;
+					};
+					_comp.addEventListener(_event, _listener);
 				} catch (IllegalArgumentException e) {
 					_subscriber.onError(e);
 				}
@@ -165,12 +165,8 @@ public abstract class ZkReactiveStreams {
 		}
 
 		public void cancel() {
-			if (_requested) {
-				_comp.removeEventListener(_event, new EventListener<Event>() {
-					public void onEvent(Event t) throws Exception {
-						_subscriber.onNext(t);
-					}
-				});
+			if (_listener != null) {
+				_comp.removeEventListener(_event, _listener);
 			}
 		}
 	}
@@ -181,7 +177,7 @@ public abstract class ZkReactiveStreams {
 		private final boolean _autoCreate;
 		private final Subscriber<? super T> _subscriber;
 		private final boolean _async;
-		private boolean _requested;
+		private EventListener<T> _listener;
 
 		EventQueueSubscription(String queueName, String scope, boolean autoCreate,
 		                       boolean async, Subscriber<? super T> subscriber) {
@@ -193,14 +189,14 @@ public abstract class ZkReactiveStreams {
 		}
 
 		public void request(long n) {
-			if (!_requested) {
+			if (_listener == null) {
 				try {
-					getEventQueue().subscribe(new EventListener<T>() {
+					_listener = new EventListener<T>() {
 						public void onEvent(T t) throws Exception {
 							_subscriber.onNext(t);
 						}
-					}, _async);
-					_requested = true;
+					};
+					getEventQueue().subscribe(_listener, _async);
 				} catch (Exception e) {
 					_subscriber.onError(e);
 				}
@@ -208,12 +204,8 @@ public abstract class ZkReactiveStreams {
 		}
 
 		public void cancel() {
-			if (_requested) {
-				getEventQueue().unsubscribe(new EventListener<T>() {
-					public void onEvent(T t) throws Exception {
-						_subscriber.onNext(t);
-					}
-				});
+			if (_listener != null) {
+				getEventQueue().unsubscribe(_listener);
 			}
 		}
 
@@ -222,10 +214,10 @@ public abstract class ZkReactiveStreams {
 		}
 	}
 
-	static class ExistedEventQueueSubscription<T extends Event> extends EventQueueSubscription<T> {
+	static class ExistingEventQueueSubscription<T extends Event> extends EventQueueSubscription<T> {
 		private EventQueue<T> _eventQueue;
 
-		ExistedEventQueueSubscription(EventQueue<T> eventQueue, boolean async, Subscriber<? super T> subscriber) {
+		ExistingEventQueueSubscription(EventQueue<T> eventQueue, boolean async, Subscriber<? super T> subscriber) {
 			super("", "", false, async, subscriber);
 			this._eventQueue = eventQueue;
 		}
