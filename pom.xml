@@ -6,7 +6,7 @@
 
     <groupId>org.zkoss.addons</groupId>
     <artifactId>rxzk</artifactId>
-    <version>1.0.1</version>
+    <version>0.8.0</version>
     <packaging>jar</packaging>
 
     <name>RxZK</name>
