@@ -13,11 +13,12 @@ package org.zkoss.addons.rxzk;
 
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
 
+import org.zkoss.addons.rxzk.internal.subscription.ComponentEventSubscription;
+import org.zkoss.addons.rxzk.internal.subscription.EventQueueSubscription;
+import org.zkoss.addons.rxzk.internal.subscription.ExistingEventQueueSubscription;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.Events;
@@ -136,95 +137,4 @@ public abstract class ZkReactiveStreams {
 		};
 	}
 
-	static class ComponentEventSubscription implements Subscription {
-		private final Component _comp;
-		private final String _event;
-		private final Subscriber<? super Event> _subscriber;
-		private EventListener<Event> _listener;
-
-		ComponentEventSubscription(Component comp, String event,
-		                           Subscriber<? super Event> subscriber) {
-			this._comp = comp;
-			this._event = event;
-			this._subscriber = subscriber;
-		}
-
-		public void request(long n) {
-			if (_listener == null) {
-				try {
-					_listener = new EventListener<Event>() {
-						public void onEvent(Event t) throws Exception {
-							_subscriber.onNext(t);
-						}
-					};
-					_comp.addEventListener(_event, _listener);
-				} catch (IllegalArgumentException e) {
-					_subscriber.onError(e);
-				}
-			}
-		}
-
-		public void cancel() {
-			if (_listener != null) {
-				_comp.removeEventListener(_event, _listener);
-			}
-		}
-	}
-
-	static class EventQueueSubscription<T extends Event> implements Subscription {
-		private final String _queueName;
-		private final String _scope;
-		private final boolean _autoCreate;
-		private final Subscriber<? super T> _subscriber;
-		private final boolean _async;
-		private EventListener<T> _listener;
-
-		EventQueueSubscription(String queueName, String scope, boolean autoCreate,
-		                       boolean async, Subscriber<? super T> subscriber) {
-			this._queueName = queueName;
-			this._scope = scope;
-			this._autoCreate = autoCreate;
-			this._async = async;
-			this._subscriber = subscriber;
-		}
-
-		public void request(long n) {
-			if (_listener == null) {
-				try {
-					_listener = new EventListener<T>() {
-						public void onEvent(T t) throws Exception {
-							_subscriber.onNext(t);
-						}
-					};
-					getEventQueue().subscribe(_listener, _async);
-				} catch (Exception e) {
-					_subscriber.onError(e);
-				}
-			}
-		}
-
-		public void cancel() {
-			if (_listener != null) {
-				getEventQueue().unsubscribe(_listener);
-			}
-		}
-
-		protected EventQueue<T> getEventQueue() {
-			return EventQueues.lookup(_queueName, _scope, _autoCreate);
-		}
-	}
-
-	static class ExistingEventQueueSubscription<T extends Event> extends EventQueueSubscription<T> {
-		private EventQueue<T> _eventQueue;
-
-		ExistingEventQueueSubscription(EventQueue<T> eventQueue, boolean async, Subscriber<? super T> subscriber) {
-			super("", "", false, async, subscriber);
-			this._eventQueue = eventQueue;
-		}
-
-		@Override
-		protected EventQueue<T> getEventQueue() {
-			return _eventQueue;
-		}
-	}
 }
