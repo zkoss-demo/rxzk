@@ -15,8 +15,10 @@ import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 
 /**
  * @author rudyhuang
@@ -51,7 +53,15 @@ public class ComponentEventSubscription implements Subscription {
 
 	public void cancel() {
 		if (_listener != null) {
-			_comp.removeEventListener(_event, _listener);
+			if (Events.inEventListener() || Executions.getCurrent() != null) {
+				_comp.removeEventListener(_event, _listener);
+			} else {
+				Executions.schedule(_comp.getDesktop(), new EventListener<Event>() {
+					public void onEvent(Event event) throws Exception {
+						_comp.removeEventListener(_event, _listener);
+					}
+				}, null);
+			}
 		}
 	}
 }
