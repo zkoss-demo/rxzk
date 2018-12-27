@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+async-update-ui.zul
+
+	Purpose:
+		
+	Description:
+		
+	History:
+		Thu Dec 27 10:09:44 CST 2018, Created by rudyhuang
+
+Copyright (C) 2018 Potix Corporation. All Rights Reserved.
+
+-->
+<zk>
+    <div apply="org.zkoss.addons.rxzk.AsyncUpdateUiComposer">
+        <textbox id="term"/>
+        <label id="result"/>
+    </div>
+</zk>

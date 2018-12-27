@@ -11,6 +11,8 @@ Copyright (C) 2018 Potix Corporation. All Rights Reserved.
 */
 package org.zkoss.addons.rxzk;
 
+import io.reactivex.functions.Consumer;
+
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.DesktopUnavailableException;
 import org.zkoss.zk.ui.Executions;
@@ -51,7 +53,7 @@ public class ZkServerPush {
 	 * Runs the job to update UI.
 	 *
 	 * @param desktop the desktop
-	 * @param job runnable job
+	 * @param job the job
 	 * @throws IllegalStateException if the server push is not enabled.
 	 * @throws DesktopUnavailableException if the desktop is removed (when activating).
 	 */
@@ -65,5 +67,27 @@ public class ZkServerPush {
 				}
 			}, null);
 		}
+	}
+
+	/**
+	 * Runs the job to update UI.
+	 *
+	 * @param desktop the desktop
+	 * @param job the job
+	 */
+	public static <T> Consumer<T> updateUi(final Desktop desktop, final Consumer<T> job) {
+		return new Consumer<T>() {
+			public void accept(final T t) throws Exception {
+				if (Events.inEventListener() || Executions.getCurrent() != null) {
+					job.accept(t);
+				} else {
+					Executions.schedule(desktop, new EventListener<Event>() {
+						public void onEvent(Event event) throws Exception {
+							job.accept(t);
+						}
+					}, null);
+				}
+			}
+		};
 	}
 }
