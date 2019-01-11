@@ -74,6 +74,8 @@ public class ZkServerPush {
 	 *
 	 * @param desktop the desktop
 	 * @param job the job
+	 * @param <T> the value type
+	 * @return The consumer object
 	 */
 	public static <T> Consumer<T> updateUi(final Desktop desktop, final Consumer<T> job) {
 		return new Consumer<T>() {
